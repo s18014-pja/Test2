@@ -52,10 +52,16 @@ namespace Test2.Services
         public Doctor ChangeDoctorEmail(ChangeDoctorEmailRequest request)
         {
             _context = new DoctorsDbContext();
-            var doctor = _context.Doctors.Where(x => x.FirstName == request.FirstName)
-                .First(x => x.LastName == request.LastName);
-            if (doctor == null)
+            Doctor doctor;
+            try
+            {
+                doctor = _context.Doctors.Where(x => x.FirstName == request.FirstName)
+                    .First(x => x.LastName == request.LastName);
+            }
+            catch
+            {
                 return null;
+            }
             doctor.Email = request.Email;
             _context.SaveChanges();
             return doctor;
@@ -64,9 +70,15 @@ namespace Test2.Services
         public bool DeleteDoctor(DeleteDoctorRequest request)
         {
             _context = new DoctorsDbContext();
-            var doctor = _context.Doctors.First(d => d.IdDoctor == Convert.ToInt32(request.IdDoctor));
-            if (doctor == null)
+            Doctor doctor;
+            try
+            {
+                doctor = _context.Doctors.First(d => d.IdDoctor == Convert.ToInt32(request.IdDoctor));
+            }
+            catch
+            {
                 return false;
+            }
             _context.Remove(doctor);
             _context.SaveChanges();
             return true;
